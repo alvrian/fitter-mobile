@@ -20,16 +20,8 @@ export default function TabOneScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Hello, {currentUser? currentUser.email:'Guest'}</Text>
-      {currentUser && (
-        <TouchableOpacity onPress={() => auth.signOut()} style={styles.button}>
-          <Text style={styles.text}>Sign out</Text>
-        </TouchableOpacity>
-      )}
-      {!currentUser && (
-        <TouchableOpacity onPress={() => router.push('/login')} style={styles.button}>
-          <Text style={styles.text}>Log in</Text>
-        </TouchableOpacity>
-      )}
+
+
     </SafeAreaView>
   );
 }
@@ -38,8 +30,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: "#E8EAF6",
   },
   title: {
     fontSize: 20,

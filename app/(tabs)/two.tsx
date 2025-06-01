@@ -1,7 +1,20 @@
 import { SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
+
 
 export default function TabTwoScreen() {
+    const [currentUser, setCurrentUser] = useState(getAuth().currentUser);
+    const auth = getAuth();
+  
+    useEffect(() => {
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        setCurrentUser(user);
+      });
+  
+      return () => unsubscribe(); // cleanup
+    }, []);
 
   return (
     <SafeAreaView style={styles.container}>
