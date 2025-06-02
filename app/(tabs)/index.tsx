@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, Dimensions, TextInput } from "react-native"; 
+import { StyleSheet, TouchableOpacity, Dimensions, TextInput , ScrollView } from "react-native"; 
 import { Text, View } from "@/components/Themed";
 import { getAuth } from "firebase/auth";
 import { useState, useEffect, useCallback } from "react";
@@ -102,14 +102,14 @@ export default function TabOneScreen() {
 
   useEffect(() => {
     if (height > 0 && userDataList.length > 0) {
-      const latestWeightData = userDataList[0]; // Get the most recent weight entry
+      const latestWeightData = userDataList[0]; 
       if (latestWeightData && typeof latestWeightData.weight === 'number') {
         const weightInKg = latestWeightData.weight;
-        const heightInMeters = height / 100; // Convert height from cm to meters
+        const heightInMeters = height / 100; 
 
-        if (heightInMeters > 0) { // Prevent division by zero
+        if (heightInMeters > 0) { 
           const bmi = weightInKg / (heightInMeters * heightInMeters);
-          setCurrentBmi(bmi.toFixed(1)); // Set BMI formatted to one decimal place
+          setCurrentBmi(bmi.toFixed(1)); 
         } else {
           setCurrentBmi("N/A");
         }
@@ -153,7 +153,7 @@ export default function TabOneScreen() {
           datasets: [
             {
               data: displayPoints.map(p => p.weight),
-              color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`, // Blue line color
+              color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`, 
               strokeWidth: 2
             }
           ]
@@ -162,14 +162,14 @@ export default function TabOneScreen() {
         setWeightChartData(null);
       }
     } else {
-      setWeightChartData(null); // No user or no data
+      setWeightChartData(null); 
     }
-  }, [userDataList, currentUser]); // Re-run when userDataList or currentUser changes
+  }, [userDataList, currentUser]); 
 
   const chartConfigMinimal = {
-    backgroundColor: "#FFFFFF", // Match card background
-    backgroundGradientFrom: "#FFFFFF", // No gradient, or very subtle
-    backgroundGradientTo: "#FFFFFF",   // Solid white
+    backgroundColor: "#FFFFFF", 
+    backgroundGradientFrom: "#FFFFFF",
+    backgroundGradientTo: "#FFFFFF",  
     decimalPlaces: 1,
     color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`, // Accent color (iOS blue is fine)
     labelColor: (opacity = 1) => `rgba(50, 50, 50, ${opacity})`, // Dark gray for labels
@@ -189,6 +189,7 @@ export default function TabOneScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40}} showsVerticalScrollIndicator={false} style = {{width: '100%'}}>
       <Text style={{width: "90%",fontSize: 20,fontWeight: "bold", marginBottom: 40, textAlign: 'left'}}>
         Hello, {currentUser ? currentUser.email : "Guest"}
       </Text>
@@ -266,6 +267,7 @@ export default function TabOneScreen() {
         </Text>
       )}
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -274,7 +276,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    // paddingVertical: 20, // Added some vertical padding
   },
   title: {
     fontSize: 20,
@@ -296,7 +297,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 14, 
     borderBottomWidth: 1,
-    borderBottomColor: "#eeeeee", // Lighter border color
+    borderBottomColor: "#eeeeee",
   },
   lastInfoRow: {
     borderBottomWidth: 0,
@@ -304,39 +305,38 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333333", // Darker gray for better readability
+    color: "#333333", 
   },
   infoValue: {
     fontSize: 16,
     textAlign: "right",
-    color: "#555555", // Slightly lighter gray for value
+    color: "#555555", 
   },
   userInfoCard: {
     width: "90%",
     padding: 20,
     borderRadius: 12,
     marginBottom: 20,
-    backgroundColor: "#ffffff", // Explicitly set background to white
+    backgroundColor: "#ffffff",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2, // Increased shadow offset slightly
+      height: 2, 
     },
-    shadowOpacity: 0.1, // Slightly more pronounced shadow
-    shadowRadius: 3.0,  // Soften shadow
-    elevation: 3, // For Android shadow
+    shadowOpacity: 0.1, 
+    shadowRadius: 3.0,  
+    elevation: 3, 
   },
   infoText: {
     fontSize: 16,
     textAlign: "center",
-    color: "#777777", // Medium gray for info text
-    marginVertical: 20, // Adjusted margin
+    color: "#777777", 
+    marginVertical: 20, 
   },
-  // New style for the chart title
   chartTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10, // Added some margin top
+    marginTop: 10,
     marginBottom: 5,
     textAlign: 'center',
     color: "#333333",
@@ -351,14 +351,14 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     marginBottom: 10,
-    backgroundColor: "#ffffff", // Explicitly set background to white
+    backgroundColor: "#ffffff", 
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2, // Increased shadow offset slightly
+      height: 2, 
     },
-    shadowOpacity: 0.1, // Slightly more pronounced shadow
-    shadowRadius: 3.0,  // Soften shadow
+    shadowOpacity: 0.1,
+    shadowRadius: 3.0, 
     elevation: 3,
   }
 });
