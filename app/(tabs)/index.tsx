@@ -1,10 +1,10 @@
-import { StyleSheet, TouchableOpacity, Dimensions } from "react-native"; // Added Dimensions
+import { StyleSheet, TouchableOpacity, Dimensions, TextInput } from "react-native"; 
 import { Text, View } from "@/components/Themed";
 import { getAuth } from "firebase/auth";
 import { useState, useEffect, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { db } from "../../FirebaseConfig"; // Assuming FirebaseConfig is correctly set up
-import { query, collection, where, getDocs, orderBy } from "firebase/firestore"; // Removed 'and' as it's not used directly in query like this
+import { db } from "../../FirebaseConfig"; 
+import { query, collection, where, getDocs, orderBy } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
@@ -15,6 +15,7 @@ export default function TabOneScreen() {
   const [height, setHeight] = useState(0);
   const [userDataList, setUserDataList] = useState<any[]>([]);
   const [currentBmi, setCurrentBmi] = useState<string>("N/A");
+  const [newWeight, setNewWeight] = useState("");
 
   const [weightChartData, setWeightChartData] = useState<{
     labels: string[];
@@ -229,6 +230,15 @@ export default function TabOneScreen() {
           </View>
         </View>
       )}
+      
+      <View style={styles.inputWrapper}>
+        <TextInput placeholder="Input Current Weight" value={newWeight} keyboardType="numeric" onChangeText={setNewWeight}
+          style={{flex: 1,fontSize: 16,paddingVertical: 6,paddingHorizontal: 10}}/>
+        <Text style={{fontSize: 16, marginLeft: 8,color: '#555'}}>
+          Kg
+        </Text>
+      </View>
+
       <View style = {styles.userInfoCard}>
       {!currentUser && (
         <Text style={styles.infoText}>
@@ -331,4 +341,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: "#333333",
   },
+  inputWrapper:{
+    width: '90%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingVertical: 8,
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 10,
+    backgroundColor: "#ffffff", // Explicitly set background to white
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2, // Increased shadow offset slightly
+    },
+    shadowOpacity: 0.1, // Slightly more pronounced shadow
+    shadowRadius: 3.0,  // Soften shadow
+    elevation: 3,
+  }
 });
