@@ -23,29 +23,21 @@ const AuthScreen = () => {
   const [password, setPassword] = useState("");
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState("");
-  const [error, setError] = useState(""); // For displaying errors
-  const [isLoading, setIsLoading] = useState(true); // For initial auth check loading state
-  const [isSubmitting, setIsSubmitting] = useState(false); // For login/register button loading
+  const [error, setError] = useState(""); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
-  // Effect for handling authentication state changes
   useEffect(() => {
-    // onAuthStateChanged returns an unsubscribe function
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, navigate to the main app area
-        // Ensure router is ready before replacing. Sometimes a small delay helps.
         setTimeout(() => router.replace("/(tabs)"), 0);
       } else {
-        // User is signed out or not yet signed in
-        setIsLoading(false); // Auth check is complete, no user found
+        setIsLoading(false);
       }
     });
-
-    // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, []); // Empty dependency array ensures this runs only once on mount
+  }, []); 
 
-  // Function to add user details to Firestore
   const addUserToDatabase = async (userId: string, userName: string, userEmail: string) => {
     if (!userId) {
       console.error("User ID is not available for addUserToDatabase");
@@ -53,13 +45,10 @@ const AuthScreen = () => {
       return;
     }
     try {
-      // Use setDoc to create or overwrite a document with the user's UID as the ID
-      // This stores user profiles in a 'users' collection
       await setDoc(doc(db, "users", userId), {
         email: userEmail,
         name: userName,
-        createdAt: serverTimestamp(), // Adds a server-side timestamp
-        // You can add more user-specific fields here
+        createdAt: serverTimestamp(), 
       });
     } catch (dbError: any) {
       console.error("Error adding user to database: ", dbError);
@@ -67,19 +56,15 @@ const AuthScreen = () => {
     }
   };
 
-  // Sign-in function
   const signIn = async () => {
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
     }
     setIsSubmitting(true);
-    setError(""); // Clear previous errors
+    setError(""); 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged will handle navigation, but you can also navigate here
-      // if immediate navigation is preferred after action.
-      // if (userCredential.user) router.replace("/(tabs)");
     } catch (signInError: any) {
       console.error("Sign in failed: ", signInError);
       setError("Sign in failed: " + signInError.message);
@@ -88,18 +73,16 @@ const AuthScreen = () => {
     }
   };
 
-  // Sign-up function
   const signUp = async () => {
     if (!email || !password || (isRegister && !name)) {
         setError("Please fill in all fields.");
         return;
     }
     setIsSubmitting(true);
-    setError(""); // Clear previous errors
+    setError(""); 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user) {
-        // Add user details to Firestore after successful account creation
         await addUserToDatabase(userCredential.user.uid, name, email);
         // onAuthStateChanged will handle navigation
         // if (userCredential.user) router.replace("/(tabs)");
@@ -114,14 +97,10 @@ const AuthScreen = () => {
 
   // Guest entry function
   const guestEnter = () => {
-    // For guest access, you might want to navigate to a different route
-    // or set some guest state in your app.
-    // If guest access still means going to "/(tabs)", this is fine.
     setError("");
     router.replace("/(tabs)");
   };
 
-  // If still checking auth state, show a loading indicator
   if (isLoading) {
     return (
       <SafeAreaView style={[styles.container, styles.centered]}>
@@ -131,7 +110,6 @@ const AuthScreen = () => {
     );
   }
 
-  // Main render for login/register form
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
@@ -177,7 +155,7 @@ const AuthScreen = () => {
         <TouchableOpacity
           style={styles.button}
           onPress={isRegister ? signUp : signIn}
-          disabled={isSubmitting} // Disable button while submitting
+          disabled={isSubmitting} 
         >
           {isSubmitting ? (
             <ActivityIndicator color="#FFFFFF" />
@@ -210,27 +188,26 @@ const AuthScreen = () => {
   );
 };
 
-export default AuthScreen; // Changed component name for clarity
+export default AuthScreen; 
 
-// Styles (minor adjustments and additions for error text)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black", // Assuming black background from original
+    backgroundColor: "black", 
   },
-  centered: { // For loading screen
+  centered: { 
     justifyContent: "center",
     alignItems: "center",
   },
   topContainer: {
-    flex: 1, // Takes up most space, pushing guest entry down
+    flex: 1, 
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: "5%", // Added padding
+    paddingHorizontal: "5%", 
   },
   title: {
-    fontSize: 32, // Slightly larger
+    fontSize: 32, 
     fontWeight: "800",
     marginBottom: 40,
     color: "white",
