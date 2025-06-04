@@ -6,18 +6,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  ActivityIndicator, // For loading state
+  ActivityIndicator, 
 } from "react-native";
-import { auth, db } from "../FirebaseConfig"; // Assuming this path is correct and Firebase is initialized
+import { auth, db } from "../FirebaseConfig"; 
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged, // Added for listening to auth state
+  onAuthStateChanged, 
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore'; // For adding user data
-import { router } from "expo-router"; // Assuming expo-router is set up
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'; 
+import { router } from "expo-router"; 
 
-// Main component
+
 const AuthScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +26,7 @@ const AuthScreen = () => {
   const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false); 
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -84,8 +85,6 @@ const AuthScreen = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user) {
         await addUserToDatabase(userCredential.user.uid, name, email);
-        // onAuthStateChanged will handle navigation
-        // if (userCredential.user) router.replace("/(tabs)");
       }
     } catch (signUpError: any) {
       console.error("Sign up failed: ", signUpError);
@@ -95,7 +94,6 @@ const AuthScreen = () => {
     }
   };
 
-  // Guest entry function
   const guestEnter = () => {
     setError("");
     router.replace("/(tabs)");
@@ -115,7 +113,6 @@ const AuthScreen = () => {
       <View style={styles.topContainer}>
         <Text style={styles.title}>{isRegister ? "Register" : "Login"}</Text>
 
-        {/* Email Input */}
         <TextInput
           style={styles.textInput}
           placeholder="Email"
@@ -126,7 +123,6 @@ const AuthScreen = () => {
           autoCapitalize="none"
         />
 
-        {/* Name Input (only for registration) */}
         {isRegister && (
           <TextInput
             style={styles.textInput}
@@ -138,7 +134,6 @@ const AuthScreen = () => {
           />
         )}
 
-        {/* Password Input */}
         <TextInput
           style={styles.textInput}
           placeholder="Password"
@@ -148,10 +143,7 @@ const AuthScreen = () => {
           secureTextEntry
         />
 
-        {/* Error Message Display */}
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {/* Action Button (Login/Register) */}
         <TouchableOpacity
           style={styles.button}
           onPress={isRegister ? signUp : signIn}
@@ -164,7 +156,6 @@ const AuthScreen = () => {
           )}
         </TouchableOpacity>
 
-        {/* Toggle between Login and Register */}
         <View style={styles.toggleContainer}>
           <Text style={styles.toggleText}>
             {isRegister ? "Already have an account? " : "Don't have an account yet? "}
@@ -177,7 +168,6 @@ const AuthScreen = () => {
         </View>
       </View>
 
-      {/* Guest Entry Section */}
       <View style={styles.guestContainer}>
         <View style={styles.separator} />
         <TouchableOpacity onPress={guestEnter} disabled={isSubmitting}>
@@ -214,15 +204,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 50,
-    width: "100%", // Use full width of parent
-    backgroundColor: "#2C2C2E", // Darker input background
-    borderColor: "#4A4A4A", // Subtle border
+    width: "100%", 
+    backgroundColor: "#2C2C2E", 
+    borderColor: "#4A4A4A", 
     borderWidth: 1,
     borderRadius: 12,
-    marginVertical: 10, // Adjusted margin
+    marginVertical: 10,
     paddingHorizontal: 18,
     fontSize: 16,
-    color: "white", // White text for dark input
+    color: "white", 
   },
   button: {
     width: "100%",

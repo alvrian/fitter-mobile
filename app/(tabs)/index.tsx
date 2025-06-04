@@ -114,10 +114,10 @@ export default function TabOneScreen() {
           setCurrentBmi("N/A");
         }
       } else {
-        setCurrentBmi("N/A"); // If no valid weight found
+        setCurrentBmi("N/A"); 
       }
     } else {
-      setCurrentBmi("N/A"); // If height is 0 or no weight data
+      setCurrentBmi("N/A"); 
     }
   }, [userDataList]);
 
@@ -171,19 +171,19 @@ export default function TabOneScreen() {
     backgroundGradientFrom: "#FFFFFF",
     backgroundGradientTo: "#FFFFFF",  
     decimalPlaces: 1,
-    color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`, // Accent color (iOS blue is fine)
-    labelColor: (opacity = 1) => `rgba(50, 50, 50, ${opacity})`, // Dark gray for labels
+    color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`, 
+    labelColor: (opacity = 1) => `rgba(50, 50, 50, ${opacity})`, 
     style: {
-      borderRadius: 10, // Match chartStyle borderRadius
+      borderRadius: 10,
     },
     propsForDots: {
-      r: "4", // Slightly smaller dots
+      r: "4", 
       strokeWidth: "2",
-      stroke: "#007AFF", // Accent color
+      stroke: "#007AFF", 
     },
     propsForBackgroundLines: {
-      strokeDasharray: "", // Solid lines
-      stroke: "#EFEFEF", // Very light grid lines
+      strokeDasharray: "",
+      stroke: "#EFEFEF", 
     }
   };
 
@@ -191,7 +191,7 @@ export default function TabOneScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40}} showsVerticalScrollIndicator={false} style = {{width: '100%'}}>
       <Text style={{width: "90%",fontSize: 20,fontWeight: "bold", marginBottom: 40, textAlign: 'left'}}>
-        Hello, {currentUser ? currentUser.email : "Guest"}
+        Hello, {currentUser ? `${name}` : "Guest"}
       </Text>
       {!currentUser && (
         <View style={styles.userInfoCard}>
@@ -202,17 +202,6 @@ export default function TabOneScreen() {
       )}
       {currentUser && (
         <View style={styles.userInfoCard}>
-          {name ? (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Name:</Text>
-              <Text style={styles.infoValue}>{`${name}`}</Text>
-            </View>
-          ) : (
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Name:</Text>
-              <Text style={styles.infoValue}>N/A</Text>
-            </View>
-          )}
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Age:</Text>
             <Text style={styles.infoValue}>
