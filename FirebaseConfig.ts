@@ -12,13 +12,7 @@ import { getFirestore } from "firebase/firestore";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 //name: fitter-mobile
 const firebaseConfig = {
-  apiKey: "AIzaSyDfFY1dP2yWVy2AapRPlRyF1s8ZLf8ymYE",
-  authDomain: "fitter-mobile.firebaseapp.com",
-  projectId: "fitter-mobile",
-  storageBucket: "fitter-mobile.firebasestorage.app",
-  messagingSenderId: "28356813933",
-  appId: "1:28356813933:web:42724af678445cd469cb64",
-  measurementId: "G-ZTHHS89QXD"
+
 };
 
 // Initialize Firebase
