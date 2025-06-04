@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import { useState, useEffect, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { db } from "../../FirebaseConfig"; 
-import { query, collection, where, getDocs, orderBy } from "firebase/firestore";
+import { query, collection, where, getDocs, orderBy, addDoc } from "firebase/firestore";
 import { useFocusEffect } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
@@ -187,6 +187,25 @@ export default function TabOneScreen() {
     }
   };
 
+  const addTodayWeight = async (userid: string) => {
+    if (newWeight && !isNaN(parseFloat(newWeight))) {
+      const weight = parseFloat(newWeight);
+      const date = new Date();
+      try {
+        await addDoc(ref2, {
+          userid: userid,
+          weight: weight,
+          date: date
+        });
+        setNewWeight("");
+        fetchData(userid);
+      } catch (error) {
+        console.error("Error adding weight data: ", error);
+      }
+    }
+  }
+
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: 'center', paddingBottom: 40}} showsVerticalScrollIndicator={false} style = {{width: '100%'}}>
@@ -219,15 +238,23 @@ export default function TabOneScreen() {
             <Text style={styles.infoValue}>{currentBmi}</Text> 
           </View>
         </View>
+        
       )}
-      
+      {currentUser && (
       <View style={styles.inputWrapper}>
         <TextInput placeholder="Input Current Weight" value={newWeight} keyboardType="numeric" onChangeText={setNewWeight}
           style={{flex: 1,fontSize: 16,paddingVertical: 6,paddingHorizontal: 10}}/>
         <Text style={{fontSize: 16, marginLeft: 8,color: '#555'}}>
           Kg
         </Text>
+        {newWeight != "" && (
+          <TouchableOpacity onPress={() => addTodayWeight(currentUser.uid)} style={{marginLeft: 10, padding: 10, backgroundColor: '#007AFF', borderRadius: 8}}>
+            <Text style={{fontSize: 16, color: 'white'}}>Add</Text>
+          </TouchableOpacity>
+        )}
       </View>
+    )}
+
 
       <View style = {styles.userInfoCard}>
       {!currentUser && (
