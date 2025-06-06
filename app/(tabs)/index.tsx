@@ -283,6 +283,15 @@ export default function TabOneScreen() {
         </Text>
       )}
       </View>
+      <View style = {styles.userInfoCard}>
+        <Text style = {styles.chartTitle}>Meal History</Text>
+        {!currentUser && (
+          <Text style={styles.infoText}>
+              Please log in to see your weight history.
+          </Text>
+       )}
+       
+      </View>
       </ScrollView>
     </SafeAreaView>
   );

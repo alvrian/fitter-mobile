@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   SafeAreaView,
   Text,
@@ -14,7 +14,7 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged, 
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore'; 
+import { serverTimestamp, addDoc, collection } from 'firebase/firestore'; 
 import { router } from "expo-router"; 
 
 
@@ -26,7 +26,7 @@ const AuthScreen = () => {
   const [error, setError] = useState(""); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false); 
-
+  const ref = collection(db, 'user');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -46,10 +46,11 @@ const AuthScreen = () => {
       return;
     }
     try {
-      await setDoc(doc(db, "users", userId), {
+      await addDoc(ref, {
         email: userEmail,
         name: userName,
         createdAt: serverTimestamp(), 
+        userid: userId,
       });
     } catch (dbError: any) {
       console.error("Error adding user to database: ", dbError);
