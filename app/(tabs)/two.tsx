@@ -1,16 +1,24 @@
-import { SafeAreaView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, TouchableOpacity, Text, View, Image, Alert } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { CameraView, useCameraPermissions, CameraType } from 'expo-camera';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'; // Import for image manipulation
+
+// The 'react-native-fast-tflite' import is commented out as its usage for
+// processing the image into a tensor is beyond the scope of this request,
+// which focuses on taking and saving the picture URI.
+// import { loadTensorflowModel } from 'react-native-fast-tflite';
 
 export default function TabTwoScreen() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+  const [takenImageUri, setTakenImageUri] = useState<string | null>(null);
 
   const isFocused = useIsFocused();
+  const cameraRef = useRef<CameraView>(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -23,6 +31,29 @@ export default function TabTwoScreen() {
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
+
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync();
+        console.log('Original photo URI:', photo.uri);
+
+        const manipulatedImage = await manipulateAsync(
+          photo.uri,
+          [{ resize: { width: 255, height: 255 } }],
+          { compress: 1, format: SaveFormat.JPEG }
+        );
+        console.log('Manipulated image URI:', manipulatedImage.uri);
+        setTakenImageUri(manipulatedImage.uri);
+
+      } catch (error) {
+        console.error('Failed to take or manipulate picture:', error);
+        Alert.alert('Error', 'Failed to take or process picture. Please try again.');
+      }
+    } else {
+      Alert.alert('Error', 'Camera reference is not available.');
+    }
+  };
 
   if (!permission) {
     return <View />;
@@ -45,13 +76,22 @@ export default function TabTwoScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <MaterialIcons name="flip-camera-ios" size={30} color="white" />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={takePicture}>
+            <MaterialIcons name="camera-alt" size={30} color="white" />
+          </TouchableOpacity>
         </View>
       </CameraView>
+      {takenImageUri && (
+        <View style={styles.previewContainer}>
+          <Text style={styles.previewText}>Taken Image (255x255):</Text>
+          <Image source={{ uri: takenImageUri }} style={styles.previewImage} />
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -78,10 +118,11 @@ const styles = StyleSheet.create({
   button: {
     alignSelf: 'flex-end',
     padding: 10,
+    marginHorizontal: 20, 
   },
   permissionText: {
     textAlign: 'center',
-    color: 'white', 
+    color: 'white',
     paddingHorizontal: 20,
   },
   permissionButton: {
@@ -96,5 +137,22 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  previewContainer: {
+    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#333',
+  },
+  previewText: {
+    color: 'white',
+    marginBottom: 10,
+    fontSize: 16,
+  },
+  previewImage: {
+    width: 255,
+    height: 255,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#007AFF',
   },
 });
