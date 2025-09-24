@@ -17,7 +17,6 @@
 * [Deployment](#deployment)
 * [Troubleshooting](#troubleshooting)
 * [Contributing](#contributing)
-* [License](#license)
 
 ---
 
